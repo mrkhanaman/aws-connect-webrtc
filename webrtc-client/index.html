@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AWS WebRTC PoC</title>
+
+    <script>
+        // Browser compatibility shim for dependencies
+        // expecting Node.js-style global.
+        globalThis.global = globalThis;
+    </script>
+</head>
+
+<body>
+
+    <h1>AWS WebRTC PoC</h1>
+
+    <p id="status">Initialising...</p>
+
+    <audio id="remoteAudio" autoplay></audio>
+
+    <script type="module" src="/src/app.js"></script>
+
+</body>
+</html>
