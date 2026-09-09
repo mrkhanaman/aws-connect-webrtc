@@ -310,7 +310,7 @@ This file can contain temporary meeting and participant information.
 ---
 
 # ⚠ Disclaimer
-**This repository is a personal proof of concept and learning project.
+**This repository is a personal proof of concept and learning project.**
 
-**It is not intended to be used directly as a production telephony or contact centre solution without additional security, scalability, monitoring, resiliency and compliance work.
+**It is not intended to be used directly as a production telephony or contact centre solution without additional security, scalability, monitoring, resiliency and compliance work.**
 
