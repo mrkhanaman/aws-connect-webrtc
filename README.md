@@ -64,7 +64,7 @@ The following part is working:
 
 **SIP Extension 1001 → Asterisk → WebRTC → Amazon Connect → CCP Agent**
 
-The CCP agent is able to hear the audio coming from extension 1001.
+The CCP agent is able to hear the audio coming from extension `1001`.
 
 The reverse media path is the next part being worked on:
 
@@ -204,24 +204,24 @@ The browser creates a WebRTC-compatible audio stream and provides it to the Chim
 
 The browser application is under: 
 
-*webrtc-client/
+*webrtc-client/*
 
 The main application is: 
 
-*webrtc-client/src/app.js
+*webrtc-client/src/app.js*
 
 The application is served using Vite.
 
 The browser is launched in headless mode for this POC.
 
-The WebRTC client communicates with the Python gateway through: WebSocket 127.0.0.1:9020
+The WebRTC client communicates with the Python gateway through: `WebSocket 127.0.0.1:9020`
 
 
 ## 7. Local API
 
 The Python gateway exposes: 
 
-*POST /api/start-contact
+*POST /api/start-contact*
 
 
 This API starts the Amazon Connect WebRTC contact.
@@ -229,7 +229,7 @@ This API starts the Amazon Connect WebRTC contact.
 
 There is also a health check: 
 
-*GET /health
+*GET /health*
 
 	Example response:
 ```
@@ -245,7 +245,7 @@ There is also a health check:
 
 The local configuration file is: 
 
-*config.py
+*config.py*
 
 It contains values such as:
 
@@ -263,7 +263,7 @@ The WebRTC session information is stored locally during development.
 
 For example: 
 
-*webrtc-client/public/session.json
+*webrtc-client/public/session.json*
 
 This file can contain temporary meeting and participant information.
 
@@ -274,20 +274,20 @@ This file can contain temporary meeting and participant information.
 
 ## Python environment: Activate python virtual environment
 
-*.\.venv\Scripts\Activate.ps1
+*.\.venv\Scripts\Activate.ps1*
 
 
 
 ## Start the gateway: Run the FastAPI gateway using the project's Python environment.
 
-*python gateway_api.py
+*python gateway_api.py*
 
 
 ## Start the WebRTC client: start vite
 
-*cd webrtc-client
-*npm install
-*npm run dev
+*cd webrtc-client*
+*npm install*
+*npm run dev*
 
 
 ---
