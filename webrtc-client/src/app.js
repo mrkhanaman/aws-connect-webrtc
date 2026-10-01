@@ -218,6 +218,11 @@ const session = {
         console.log(
             "WebRTC session started successfully."
         );
+        // --------------------------------------------------
+        // 8. Start reverse audio (agent → Asterisk)
+        // --------------------------------------------------
+
+        startReverseAudio(meetingSession);
 
     }
     catch (error) {
@@ -230,6 +235,74 @@ const session = {
         status.textContent =
             `WebRTC connection failed: ${error.message}`;
     }
+}
+// --------------------------------------------------
+// Reverse audio: capture agent audio from WebRTC
+// and send PCM to Python gateway via WebSocket
+// --------------------------------------------------
+
+function startReverseAudio(meetingSession) {
+
+    // Open WebSocket connection to Python gateway
+    const ws = new WebSocket("ws://127.0.0.1:9020");
+
+    ws.addEventListener("open", () => {
+        console.log("Reverse audio WebSocket connected.");
+    });
+
+    ws.addEventListener("error", (err) => {
+        console.error("Reverse audio WebSocket error:", err);
+    });
+
+    ws.addEventListener("close", () => {
+        console.warn("Reverse audio WebSocket closed.");
+    });
+
+    // Create Web Audio context at 8000 Hz
+    // to match Asterisk AudioSocket sample rate
+    const audioContext = new AudioContext({ sampleRate: 8000 });
+
+    // Get the remote audio stream coming from Amazon Connect agent
+    const remoteStream = meetingSession.audioVideo
+        .getCurrentMeetingAudioStream();
+
+    if (!remoteStream) {
+        console.error("No remote audio stream available.");
+        return;
+    }
+
+    // Connect the remote stream into the Web Audio graph
+    const source = audioContext.createMediaStreamSource(remoteStream);
+
+    // ScriptProcessor processes audio in chunks
+    // 512 samples per chunk, 1 input channel, 1 output channel
+    const processor = audioContext.createScriptProcessor(512, 1, 1);
+
+    processor.onaudioprocess = (event) => {
+
+        // getChannelData(0) gives us Float32 samples (-1.0 to +1.0)
+        const float32 = event.inputBuffer.getChannelData(0);
+
+        // Convert Float32 to Int16 PCM (what Asterisk expects)
+        const int16 = new Int16Array(float32.length);
+
+        for (let i = 0; i < float32.length; i++) {
+            // Clamp value between -1 and 1, then scale to Int16 range
+            const clamped = Math.max(-1, Math.min(1, float32[i]));
+            int16[i] = clamped * 32767;
+        }
+
+        // Send raw PCM bytes over WebSocket if connection is open
+        if (ws.readyState === WebSocket.OPEN) {
+            ws.send(int16.buffer);
+        }
+    };
+
+    // Wire up the audio graph
+    source.connect(processor);
+    processor.connect(audioContext.destination);
+
+    console.log("Reverse audio capture started.");
 }
 
 startWebRTC();
